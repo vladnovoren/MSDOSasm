@@ -1,0 +1,65 @@
+Turbo Assembler	 Version 4.1	    02/10/21 17:53:06	    Page 1
+loop.asm
+
+
+
+      1	0000			     .model tiny
+      2	0000			     .code
+      3				     org 100h
+      4
+      5	0100  BB 0111r		     start:  mov bx, offset string
+      6
+      7
+      8	0103  8A 17		     cycle:  mov dl, [bx]
+      9	0105  B4 02			     mov ah, 2
+     10	0107  CD 21			     int 21h
+     11
+     12	0109  8A 07			     mov al, [bx]
+     13	010B  43			     inc bx
+     14	010C  3C 0A			     cmp al, 0ah
+     15	010E  75 F3			     jne cycle
+     16
+     17
+     18	0110  C3			     ret
+     19
+     20	0111  48 65 6C 70 20 70	6F+  string  db	"Help poor children in Uganda!", 0dh, 0ah, 'S'
+     21	      6F 72 20 63 68 69	6C+
+     22	      64 72 65 6E 20 69	6E+
+     23	      20 55 67 61 6E 64	61+
+     24	      21 0D 0A 53
+     25
+     26				     end     start
+Turbo Assembler	 Version 4.1	    02/10/21 17:53:06	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "02/10/21"
+??FILENAME			  Text	 "loop	  "
+??TIME				  Text	 "17:53:05"
+??VERSION			  Number 040A
+@32BIT				  Text	 0
+@CODE				  Text	 DGROUP
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 LOOP
+@INTERFACE			  Text	 000H
+@MODEL				  Text	 1
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+CYCLE				  Near	 DGROUP:0103
+START				  Near	 DGROUP:0100
+STRING				  Byte	 DGROUP:0111
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _DATA				  16  0000 Word	  Public  DATA
+  _TEXT				  16  0131 Word	  Public  CODE
+

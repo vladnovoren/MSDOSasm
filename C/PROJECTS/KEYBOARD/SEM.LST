@@ -1,0 +1,143 @@
+Turbo Assembler	 Version 4.1	    02/18/21 23:48:33	    Page 1
+sem.asm
+
+
+
+      1	0000			     .model tiny
+      2	0000			     .code
+      3
+      4				     org 100h
+      5
+      6	0100			     start:  ; mov ax, 0b800h
+      7					     ; mov es, ax
+      8					     ; mov di, 2 * 80 +	2 * 40
+      9					     ; mov ah, 4eh
+     10					     ;
+     11					     ; Next:   in al, 60h
+     12					     ; mov es:[di], ax
+     13					     ; cmp al, 1
+     14					     ; jne Next
+     15
+     16
+     17	0100  33 DB			     xor bx, bx	; адресуемся к таблице прерываний
+     18	0102  8E C3			     mov es, bx
+     19	0104  BB 0024			     mov bx, 9 * 4
+     20	0107  26: 8B 07			     mov ax, es:[bx]
+     21
+     22
+     23	010A  A3 0164r			     mov old09ofs, ax ;	сохранили в переменной old09ofs смещение+
+     24				     старой функции обработки прерывания 09h
+     25	010D  26: 8B 47	02		     mov ax, es:[bx + 2] ;
+     26	0111  A3 0166r			     mov old09_seg, ax ; сохранили в переменной old09_seg сегмент+
+     27				     в	котором лежит старая функция обработки		    +
+     28				     прерывания 09h
+     29
+     30	0114  FA			     cli ; запрещаем внешние прерывания
+     31	0115  26: C7 07	0132r		     mov es:[bx], offset New09 ; кладем в регистр	смещение нашей +
+     32				     функции обработки прерывания
+     33	011A  8C C8			     mov ax, cs	;
+     34	011C  26: 89 47	02		     mov es:[bx	+ 2], ax ; кладем	сегмент кода	в место для	    +
+     35				     хранения сегмента в котором лежит функция		    +
+     36				     обработки	прерывания прерывания
+     37	0120  FB			     sti ; снова разрешаем внение прерывания
+     38
+     39
+     40
+     41	0121  B8 3100			     mov ax, 3100h ; код того чтобы	остаться резидентом
+     42	0124  BA 0168r			     mov dx, offset EndProgram ; помещаем в dx	смещение конца	    +
+     43				     программы
+     44	0127  D1 EA D1 EA D1 EA	D1+	     shr dx, 4 ; делим на 4, тк размер исчисляется в		    +
+     45	      EA		     параграфах
+     46	012F  42			     inc dx ; увеличиваем dx	на всякий случай,	чтобы	    +
+     47				     выделенной памяти точно хватило для	программы
+     48	0130  CD 21			     int 21h ; вызываем	21h прерывание
+     49
+     50
+     51	0132				     New09 proc	; метка
+     52	0132  06 57 50			     push es di	ax ; сохраняем	регистры в стек
+     53	0135  BF B800			     mov di, 0b800h ; кладем в di видеопамяти
+     54	0138  8E C7			     mov es, di	; помещаем di в es
+     55	013A  BF 00F0			     mov di, 2 * (80 + 40) ; помещаем желаемое смещение	в di
+     56	013D  B4 4E			     mov ah, 4eh ; в ah - жёлтый	на красном фоне
+     57	013F  E4 60			     in	al, 60h	; берем скан-код последней	нажатой клавиши
+Turbo Assembler	 Version 4.1	    02/18/21 23:48:33	    Page 2
+sem.asm
+
+
+
+     58	0141  26: 89 05			     mov es:[di], ax ; кладем скан-код в видеопамять
+     59
+     60	0144  3C 02			     cmp al, 02h ; сравниваем	скан-код	со скан-кодом	    +
+     61				     единички
+     62	0146  75 18			     jne EOI ; если	не равны, то не выводим его		    +
+     63				     дополнительно
+     64
+     65	0148  26: 89 45	04		     mov es:[di	+ 4], ax ; кладем	снова этот символ в		    +
+     66				     видеопамять
+     67
+     68	014C  E4 61			     in	al, 61h	; загружаем в	al содержимое	порта 61h
+     69	014E  8A E0			     mov ah, al	; сохраняем al	в ah
+     70
+     71	0150  0C 80			     or	al, 80h	; устанавливаем старший бит порта 61h в	    +
+     72				     единичку, чтобы клавиатура была	заблокирована [80h	=   +
+     73				     1000 0000 b]
+     74	0152  E6 61			     out 61h, al ;
+     75	0154  8A C4			     mov al, ah	; возвращаем в al его исходное значение
+     76	0156  E6 61			     out 61h, al ; возвращаем	исходное содержимое 61h
+     77
+     78	0158  B0 20			     mov al, 20h ;
+     79	015A  E6 20			     out 20h, al ; выводим в порт 20h байт 20h чтобы чтобы	    +
+     80				     очистить регистр обслуживания прерываний
+     81
+     82	015C  58 5F 07			     pop ax di es ; восстанавливаем значения регистров
+     83	015F  CF			     iret ; возвращаемся из процедуры обработки		    +
+     84				     прерывания
+     85
+     86	0160  58 5F 07		     EOI:    pop ax di es
+     87
+     88	0163  EA			     db	0eah ; код операции jmp far
+     89	0164  0000		     old09ofs  dw 0
+     90	0166  0000		     old09_seg dw 0
+     91				     ;	     cmp al, 01h
+     92
+     93	0168				     endp
+     94
+     95	0168			     EndProgram:
+     96					     end Start
+Turbo Assembler	 Version 4.1	    02/18/21 23:48:33	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "02/18/21"
+??FILENAME			  Text	 "sem	  "
+??TIME				  Text	 "23:48:33"
+??VERSION			  Number 040A
+@32BIT				  Text	 0
+@CODE				  Text	 DGROUP
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 SEM
+@INTERFACE			  Text	 000H
+@MODEL				  Text	 1
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+ENDPROGRAM			  Near	 DGROUP:0168
+EOI				  Near	 DGROUP:0160
+NEW09				  Near	 DGROUP:0132
+OLD09OFS			  Word	 DGROUP:0164
+OLD09_SEG			  Word	 DGROUP:0166
+START				  Near	 DGROUP:0100
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _DATA				  16  0000 Word	  Public  DATA
+  _TEXT				  16  0168 Word	  Public  CODE
+

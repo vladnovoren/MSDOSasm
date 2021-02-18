@@ -1,0 +1,67 @@
+Turbo Assembler	 Version 4.1	    02/08/21 05:47:11	    Page 1
+color.asm
+
+
+
+      1	0000			     .model tiny
+      2	0000			     .code
+      3				     org 100h
+      4
+      5	0100  B4 00		     start:  mov ah, 00h ; set video mode
+      6	0102  BE 0118r			     mov si, offset string
+      7
+      8
+      9	0105  8A 04		     cycle:  mov al, [si]
+     10	0107  B7 01			     mov bh, 1
+     11	0109  B3 05			     mov bl, 5
+     12	010B  CD 10			     int 10h
+     13
+     14	010D  8A 04			     mov al, [si]
+     15	010F  46			     inc si
+     16	0110  3C 0A			     cmp al, 0ah
+     17	0112  75 F1			     jne cycle
+     18
+     19	0114  B4 4C			     mov ah, 4ch
+     20	0116  CD 21			     int 21h
+     21
+     22	0118  48 65 6C 70 20 70	6F+  string  db	"Help poor children in Uganda!", 0dh, 0ah, 'S'
+     23	      6F 72 20 63 68 69	6C+
+     24	      64 72 65 6E 20 69	6E+
+     25	      20 55 67 61 6E 64	61+
+     26	      21 0D 0A 53
+     27
+     28				     end     start
+Turbo Assembler	 Version 4.1	    02/08/21 05:47:11	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "02/08/21"
+??FILENAME			  Text	 "color	  "
+??TIME				  Text	 "05:47:10"
+??VERSION			  Number 040A
+@32BIT				  Text	 0
+@CODE				  Text	 DGROUP
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 COLOR
+@INTERFACE			  Text	 000H
+@MODEL				  Text	 1
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+CYCLE				  Near	 DGROUP:0105
+START				  Near	 DGROUP:0100
+STRING				  Byte	 DGROUP:0118
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _DATA				  16  0000 Word	  Public  DATA
+  _TEXT				  16  0138 Word	  Public  CODE
+

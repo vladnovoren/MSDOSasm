@@ -1,0 +1,57 @@
+Turbo Assembler	 Version 4.1	    02/13/21 01:57:34	    Page 1
+1.asm
+
+
+
+      1	0000			     .model tiny
+      2	0000			     .code
+      3				     org 100h
+      4
+      5	0100			     start:
+      6	0100  B8 0001			     mov ax, 1
+      7	0103  8B D8			     mov bx, 4 * ax
+**Error** 1.asm(7) Illegal register multiplier
+      8
+      9	0105  B4 4C			     mov ah, 4ch
+     10	0107  CD 21			     int 21h
+     11
+     12
+     13				     end start
+Turbo Assembler	 Version 4.1	    02/13/21 01:57:34	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "02/13/21"
+??FILENAME			  Text	 "1	  "
+??TIME				  Text	 "01:57:34"
+??VERSION			  Number 040A
+@32BIT				  Text	 0
+@CODE				  Text	 DGROUP
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 1
+@INTERFACE			  Text	 000H
+@MODEL				  Text	 1
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+START				  Near	 DGROUP:0100
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _DATA				  16  0000 Word	  Public  DATA
+  _TEXT				  16  0109 Word	  Public  CODE
+Turbo Assembler	 Version 4.1	    02/13/21 01:57:34	    Page 3
+Error Summary
+
+
+
+**Error** 1.asm(7) Illegal register multiplier
+
