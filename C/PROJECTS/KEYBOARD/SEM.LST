@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/18/21 23:48:33	    Page 1
+Turbo Assembler	 Version 4.1	    02/19/21 00:57:06	    Page 1
 sem.asm
 
 
@@ -60,7 +60,7 @@ sem.asm
      55	013A  BF 00F0			     mov di, 2 * (80 + 40) ; помещаем желаемое смещение	в di
      56	013D  B4 4E			     mov ah, 4eh ; в ah - жёлтый	на красном фоне
      57	013F  E4 60			     in	al, 60h	; берем скан-код последней	нажатой клавиши
-Turbo Assembler	 Version 4.1	    02/18/21 23:48:33	    Page 2
+Turbo Assembler	 Version 4.1	    02/19/21 00:57:06	    Page 2
 sem.asm
 
 
@@ -104,7 +104,7 @@ sem.asm
      94
      95	0168			     EndProgram:
      96					     end Start
-Turbo Assembler	 Version 4.1	    02/18/21 23:48:33	    Page 3
+Turbo Assembler	 Version 4.1	    02/19/21 00:57:06	    Page 3
 Symbol Table
 
 
@@ -112,9 +112,9 @@ Symbol Table
 
 Symbol Name			  Type	 Value
 
-??DATE				  Text	 "02/18/21"
+??DATE				  Text	 "02/19/21"
 ??FILENAME			  Text	 "sem	  "
-??TIME				  Text	 "23:48:33"
+??TIME				  Text	 "00:57:06"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP

@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 1
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 1
 frame.asm
 
 
@@ -27,306 +27,311 @@ frame.asm
      22
      23	010B  E8 0015			     call es_videosec
      24	010E  E8 0018			     call background
-     25	0111  BE 022Er			     mov si, offset test_str
+     25	0111  BE 0222r			     mov si, offset test_str
      26	0114  B9 0028			     mov cx, 40
      27	0117  BF 0528			     mov di, two_strings_size +	2 * 6 *	80 + 2 * 20
      28	011A  B3 0A			     mov bl, 10
-     29	011C  E8 00B9			     call frame_open
+     29	011C  E8 00AD			     call frame_open
      30
      31	011F  B4 4C			     mov ah, 4ch
      32	0121  CD 21			     int 21h
      33
      34				     ;----------------------------------------------------------------------------
      35				     ; вспомогательная процедура передачи в es	videosec
-     36				     ;----------------------------------------------------------------------------
-     37	0123			     es_videosec proc
-     38	0123  BB B800			     mov bx, videosec
-     39	0126  8E C3			     mov es, bx
-     40
-     41	0128  C3			     ret
-     42	0129			     es_videosec endp
-     43
-     44
-     45				     ;----------------------------------------------------------------------------
-     46				     ; процедура вывода фона	на весь экран
+     36				     ; утраченные регистры:
+     37				     ; bx, es
+     38				     ;----------------------------------------------------------------------------
+     39	0123			     es_videosec proc
+     40	0123  BB B800			     mov bx, videosec
+     41	0126  8E C3			     mov es, bx
+     42
+     43	0128  C3			     ret
+     44	0129			     es_videosec endp
+     45
+     46
      47				     ;----------------------------------------------------------------------------
-     48	0129			     background	proc
-     49	0129  B0 B1			     mov al, 0b1h
-     50	012B  B4 0F			     mov ah, 00001111b
-     51	012D  B9 1180			     mov cx, 2 * 28 * 80
-     52	0130  BF 0140			     mov di, two_strings_size
-     53	0133			     loop_back:
-     54	0133  26: 89 05			     mov word ptr es:[di], ax
-     55	0136  47			     inc di
-     56	0137  47			     inc di
-     57	0138  E2 F9		     loop loop_back
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 2
+     48				     ; процедура вывода фона	на весь экран
+     49				     ; утраченные регистры:
+     50				     ; ax, cx, di
+     51				     ;----------------------------------------------------------------------------
+     52	0129			     background	proc
+     53	0129  B0 B1			     mov al, 0b1h
+     54	012B  B4 0F			     mov ah, 00001111b
+     55	012D  B9 1180			     mov cx, 2 * 28 * 80
+     56	0130  BF 0140			     mov di, two_strings_size
+     57	0133			     loop_back:
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 2
 frame.asm
 
 
 
-     58
-     59	013A  C3			     ret
-     60
-     61	013B			     background	endp
+     58	0133  26: 89 05			     mov word ptr es:[di], ax
+     59	0136  47			     inc di
+     60	0137  47			     inc di
+     61	0138  E2 F9		     loop loop_back
      62
-     63
+     63	013A  C3			     ret
      64
-     65
-     66				     ;----------------------------------------------------------------------------
-     67				     ; задержка
+     65	013B			     background	endp
+     66
+     67
      68				     ;----------------------------------------------------------------------------
-     69	013B			     delay proc
-     70	013B  B9 FFFF			     mov cx, 0ffffh
-     71	013E			     delay_loop:
-     72	013E  83 C1 0A			     add cx, 10
-     73	0141  83 E9 0A			     sub cx, 10
-     74	0144  E2 F8		     loop   delay_loop
-     75	0146  C3			     ret
-     76	0147			     delay endp
-     77
-     78				     ;----------------------------------------------------------------------------
-     79				     ; процедура dx :=	80 - dx
-     80				     ;----------------------------------------------------------------------------
-     81	0147			     rev_dx proc
-     82	0147  8B C2			     mov ax, dx
-     83	0149  BA 0050			     mov dx, 80
-     84	014C  2B D0			     sub dx, ax
-     85	014E  C3			     ret
-     86	014F			     rev_dx endp
-     87
-     88
-     89				     ;----------------------------------------------------------------------------
-     90				     ; процедура вывода 1 символа	в видеопамять
-     91				     ; ax - символ, который хотим вывести
-     92				     ; di - номер ячейки, с	которой начать печать
-     93				     ;----------------------------------------------------------------------------
-     94	014F			     one_symbol	proc
-     95	014F  26: 89 05			     mov word ptr es:[di], ax
-     96	0152  47			     inc di
-     97	0153  47			     inc di
-     98	0154  C3			     ret
-     99	0155			     one_symbol	endp
-    100
-    101
-    102				     ;----------------------------------------------------------------------------
-    103				     ; процедура вывода символа в видеопамять	n раз
-    104				     ; использованные сегменты:
-    105				     ; ax - символ, который хотим напечатать
-    106				     ; сx - количество печатуемых символов
-    107				     ; di - номер ячейки, с	которой начать печать
-    108				     ;----------------------------------------------------------------------------
-    109	0155			     print_n_chars proc
-    110	0155  F3> AB			     rep stosw
+     69				     ; процедура dx :=	80 - dx
+     70				     ; утраченные регистры:
+     71				     ; ax, dx
+     72				     ;----------------------------------------------------------------------------
+     73	013B			     rev_dx proc
+     74	013B  8B C2			     mov ax, dx
+     75	013D  BA 0050			     mov dx, 80
+     76	0140  2B D0			     sub dx, ax
+     77	0142  C3			     ret
+     78	0143			     rev_dx endp
+     79
+     80
+     81				     ;----------------------------------------------------------------------------
+     82				     ; процедура вывода 1 символа	в видеопамять
+     83				     ; ax - символ, который хотим вывести
+     84				     ; di - номер ячейки, с	которой начать печать
+     85				     ; утраченные регистры:
+     86				     ; ax, di
+     87				     ;----------------------------------------------------------------------------
+     88	0143			     one_symbol	proc
+     89	0143  26: 89 05			     mov word ptr es:[di], ax
+     90	0146  47			     inc di
+     91	0147  47			     inc di
+     92	0148  C3			     ret
+     93	0149			     one_symbol	endp
+     94
+     95
+     96				     ;----------------------------------------------------------------------------
+     97				     ; процедура вывода символа в видеопамять	n раз
+     98				     ; использованные сегменты:
+     99				     ; ax - символ, который хотим напечатать
+    100				     ; сx - количество печатуемых символов
+    101				     ; di - номер ячейки, с	которой начать печать
+    102				     ; утраченные регистры:
+    103				     ; ax, cx, di
+    104				     ;----------------------------------------------------------------------------
+    105	0149			     print_n_chars proc
+    106	0149  F3> AB			     rep stosw
+    107
+    108	014B  C3			     ret
+    109
+    110	014C			     print_n_chars endp
     111
-    112	0157  C3			     ret
+    112
     113
-    114	0158			     print_n_chars endp
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 3
+    114				     ;----------------------------------------------------------------------------
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 3
 frame.asm
 
 
 
-    115
-    116
-    117
-    118				     ;----------------------------------------------------------------------------
-    119				     ; процедура вывода строки с особыми символами по	    +
-    120				     краям
-    121				     ; si - адрес стоки из трех	слов, среднее будет		    +
-    122				     повторено	n раз
-    123				     ; cx - длина всей	строки
-    124				     ; di - номер ячейки, с	которой печатать
-    125				     ;----------------------------------------------------------------------------
-    126	0158			     line_with_boards proc
-    127	0158  8B 04			     mov word ptr ax, [si] ; кладем в ax	первый символ
-    128	015A  E8 FFF2			     call one_symbol ; печатаем	левый край
-    129
-    130	015D  83 C6 02			     add si, 2 ; переходим ко второму	символу
-    131	0160  8B 04			     mov word ptr ax, [si]
-    132	0162  83 E9 02			     sub cx, 2
-    133	0165  E8 FFED			     call print_n_chars
-    134	0168  83 C1 02			     add cx, 2
-    135
-    136	016B  83 C6 02			     add si, 2 ; переходим к правому краю
-    137	016E  8B 04			     mov word ptr ax, [si]
-    138	0170  E8 FFDC			     call one_symbol
-    139	0173  83 C6 02			     add si, 2
-    140
-    141	0176  C3			     ret
-    142	0177			     line_with_boards endp
+    115				     ; процедура вывода строки с особыми символами по	    +
+    116				     краям
+    117				     ; si - адрес стоки из трех	слов, среднее будет		    +
+    118				     повторено	n раз
+    119				     ; cx - длина всей	строки
+    120				     ; di - номер ячейки, с	которой печатать
+    121				     ; утраченные регистры:
+    122				     ; ax, cx, di, si
+    123				     ;----------------------------------------------------------------------------
+    124	014C			     line_with_boards proc
+    125	014C  8B 04			     mov word ptr ax, [si] ; кладем в ax	первый символ
+    126	014E  E8 FFF2			     call one_symbol ; печатаем	левый край
+    127
+    128	0151  83 C6 02			     add si, 2 ; переходим ко второму	символу
+    129	0154  8B 04			     mov word ptr ax, [si]
+    130	0156  83 E9 02			     sub cx, 2
+    131	0159  E8 FFED			     call print_n_chars
+    132	015C  83 C1 02			     add cx, 2
+    133
+    134	015F  83 C6 02			     add si, 2 ; переходим к правому краю
+    135	0162  8B 04			     mov word ptr ax, [si]
+    136	0164  E8 FFDC			     call one_symbol
+    137	0167  83 C6 02			     add si, 2
+    138
+    139	016A  C3			     ret
+    140	016B			     line_with_boards endp
+    141
+    142
     143
-    144
-    145
-    146				     ;----------------------------------------------------------------------------
-    147				     ; процедура, рисующая тень для рамки
-    148				     ; cx - длина рамки
-    149				     ; bl - высота рамки
-    150				     ; di - нижний левый угол рамки
+    144				     ;----------------------------------------------------------------------------
+    145				     ; процедура, рисующая тень для рамки
+    146				     ; cx - длина рамки
+    147				     ; bl - высота рамки
+    148				     ; di - нижний левый угол рамки
+    149				     ; утраченные регистры:
+    150				     ; dl, cx, di
     151				     ;----------------------------------------------------------------------------
-    152	0177			     print_shadow proc
-    153	0177  B2 F7			     mov dl, 11110111b
-    154	0179  47			     inc di
-    155	017A  47			     inc di
-    156	017B  49			     dec cx
-    157	017C			     lower_shadow:
-    158	017C  26: 20 55	01		     and byte ptr es:[di + 1], dl
-    159	0180  47			     inc di
-    160	0181  47			     inc di
-    161	0182  E2 F8		     loop    lower_shadow
+    152	016B			     print_shadow proc
+    153	016B  B2 F7			     mov dl, 11110111b
+    154	016D  47			     inc di
+    155	016E  47			     inc di
+    156	016F  49			     dec cx
+    157	0170			     lower_shadow:
+    158	0170  26: 20 55	01		     and byte ptr es:[di + 1], dl
+    159	0174  47			     inc di
+    160	0175  47			     inc di
+    161	0176  E2 F8		     loop    lower_shadow
     162
-    163	0184  8A CB			     mov cl, bl
+    163	0178  8A CB			     mov cl, bl
     164
-    165	0186			     side_shadow:
-    166	0186  26: 20 55	01		     and byte ptr es:[di + 1], dl
-    167	018A  CC			     int 3
-    168	018B  81 EF 00A0		     sub di, 2 * 80
-    169	018F  E2 F5		     loop side_shadow
+    165	017A			     side_shadow:
+    166	017A  26: 20 55	01		     and byte ptr es:[di + 1], dl
+    167	017E  CC			     int 3
+    168	017F  81 EF 00A0		     sub di, 2 * 80
+    169	0183  E2 F5		     loop side_shadow
     170
-    171	0191  C3			     ret
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 4
+    171	0185  C3			     ret
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 4
 frame.asm
 
 
 
     172
-    173	0192			     print_shadow endp
+    173	0186			     print_shadow endp
     174
     175
     176				     ;----------------------------------------------------------------------------
     177				     ; вывод строки в рамку
     178				     ; di - левый верхний угол рамки
-    179				     ;
-    180				     ;----------------------------------------------------------------------------
-    181	0192			     print_str_in_frame	proc
-    182	0192  BE 020Fr			     mov si, offset uganda
-    183
-    184	0195			     print_str_in_frame	endp
-    185
+    179				     ; утраченные регистры:
+    180				     ; si
+    181				     ;----------------------------------------------------------------------------
+    182	0186			     print_str_in_frame	proc
+    183	0186  BE 0203r			     mov si, offset uganda
+    184
+    185	0189			     print_str_in_frame	endp
     186
-    187				     ;----------------------------------------------------------------------------
-    188				     ; вывод рамки
-    189				     ; si - адрес строки, задающей символы рамки
-    190				     ; cx - длина рамки
-    191				     ; bl - высота рамки
-    192				     ; di - номер ячейки, с	которой начать печать
-    193				     ;----------------------------------------------------------------------------
-    194	0195			     print_frame proc
-    195	0195  8B D1			     mov dx, cx	; прячем cx
-    196	0197  53			     push bx ; сохраняем bl
-    197	0198  E8 FFBD			     call line_with_boards
-    198	019B  E8 FFA9			     call rev_dx
-    199	019E  03 FA			     add di, dx
-    200	01A0  03 FA			     add di, dx
-    201
-    202	01A2  FE CB			     dec bl
-    203	01A4  FE CB			     dec bl
-    204	01A6			     middle:
-    205	01A6  E8 FF9E			     call rev_dx
-    206	01A9  8B CA			     mov cx, dx
-    207	01AB  E8 FFAA			     call line_with_boards
-    208	01AE  E8 FF96			     call rev_dx
-    209	01B1  03 FA			     add di, dx
-    210	01B3  03 FA			     add di, dx
-    211
-    212
-    213	01B5  FE CB			     dec bl
-    214	01B7  83 EE 06			     sub si, 6
+    187
+    188				     ;----------------------------------------------------------------------------
+    189				     ; вывод рамки
+    190				     ; si - адрес строки, задающей символы рамки
+    191				     ; cx - длина рамки
+    192				     ; bl - высота рамки
+    193				     ; di - номер ячейки, с	которой начать печать
+    194				     ; утраченные регистры:
+    195				     ; ax, bx, cx, dx, si, di
+    196				     ;----------------------------------------------------------------------------
+    197	0189			     print_frame proc
+    198	0189  8B D1			     mov dx, cx	; прячем cx
+    199	018B  53			     push bx ; сохраняем bl
+    200	018C  E8 FFBD			     call line_with_boards
+    201	018F  E8 FFA9			     call rev_dx
+    202	0192  03 FA			     add di, dx
+    203	0194  03 FA			     add di, dx
+    204
+    205	0196  FE CB			     dec bl
+    206	0198  FE CB			     dec bl
+    207	019A			     middle:
+    208	019A  E8 FF9E			     call rev_dx
+    209	019D  8B CA			     mov cx, dx
+    210	019F  E8 FFAA			     call line_with_boards
+    211	01A2  E8 FF96			     call rev_dx
+    212	01A5  03 FA			     add di, dx
+    213	01A7  03 FA			     add di, dx
+    214
     215
-    216	01BA  80 FB 00			     cmp bl, 0
-    217	01BD  75 E7		     jne     middle
-    218	01BF  83 C6 06			     add si, 6
-    219
-    220	01C2  E8 FF82			     call rev_dx
-    221	01C5  8B CA			     mov cx, dx
-    222	01C7  E8 FF8E			     call line_with_boards
-    223	01CA  5B			     pop bx ; вернули bl
-    224	01CB  8B CA			     mov cx, dx
-    225	01CD  E8 FF77			     call rev_dx
-    226	01D0  03 FA			     add di, dx
-    227	01D2  03 FA			     add di, dx
-    228	01D4  E8 FFA0			     call print_shadow
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 5
+    216	01A9  FE CB			     dec bl
+    217	01AB  83 EE 06			     sub si, 6
+    218
+    219	01AE  80 FB 00			     cmp bl, 0
+    220	01B1  75 E7		     jne     middle
+    221	01B3  83 C6 06			     add si, 6
+    222
+    223	01B6  E8 FF82			     call rev_dx
+    224	01B9  8B CA			     mov cx, dx
+    225	01BB  E8 FF8E			     call line_with_boards
+    226	01BE  5B			     pop bx ; вернули bl
+    227	01BF  8B CA			     mov cx, dx
+    228	01C1  E8 FF77			     call rev_dx
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 5
 frame.asm
 
 
 
-    229
-    230	01D7  C3			     ret
-    231	01D8			     print_frame endp
+    229	01C4  03 FA			     add di, dx
+    230	01C6  03 FA			     add di, dx
+    231	01C8  E8 FFA0			     call print_shadow
     232
-    233
-    234
-    235				     ;----------------------------------------------------------------------------
-    236				     ; процедура, разворачивающая рамку с	задержкой
-    237				     ; si - адрес строки, задающей символы рамки
-    238				     ; cx - длина рамки
-    239				     ; bl - высота рамки
-    240				     ; di - верхний левый угол рамки
-    241				     ;----------------------------------------------------------------------------
-    242	01D8			     frame_open	proc
-    243	01D8  8B C1			     mov ax, cx
-    244	01DA  51			     push cx ; сохранили cx
-    245	01DB  B7 02			     mov bh, 2
-    246	01DD  F6 F7			     div bh ; al := cx / 2
-    247	01DF  32 ED			     xor ch, ch
-    248	01E1  8A CC			     mov cl, ah
-    249	01E3  41			     inc cx
-    250	01E4  41			     inc cx ; cx := cx % 2 + 2
-    251	01E5  32 E4			     xor ah, ah	; ax :=	cx / 2
-    252	01E7  48			     dec ax
-    253	01E8  03 F8			     add di, ax
-    254	01EA  03 F8			     add di, ax
-    255
-    256	01EC			     frame_loop:
-    257
-    258	01EC  57			     push di
-    259	01ED  53			     push bx
-    260	01EE  51			     push cx
-    261	01EF  E8 FFA3			     call print_frame
-    262	01F2  83 EE 12			     sub si, 18
-    263
-    264	01F5  33 C9			     xor cx, cx	; вызов задержки
-    265	01F7  BA 2B67			     mov dx, 11111
-    266	01FA  B4 86			     mov ah, 86h
-    267	01FC  CD 15			     int 15h
+    233	01CB  C3			     ret
+    234	01CC			     print_frame endp
+    235
+    236
+    237
+    238				     ;----------------------------------------------------------------------------
+    239				     ; процедура, разворачивающая рамку с	задержкой
+    240				     ; si - адрес строки, задающей символы рамки
+    241				     ; cx - длина рамки
+    242				     ; bl - высота рамки
+    243				     ; di - верхний левый угол рамки
+    244				     ; утраченные регистры:
+    245				     ; ax, bx, cx, dx, si, di
+    246				     ;----------------------------------------------------------------------------
+    247	01CC			     frame_open	proc
+    248	01CC  8B C1			     mov ax, cx
+    249	01CE  51			     push cx ; сохранили cx
+    250	01CF  B7 02			     mov bh, 2
+    251	01D1  F6 F7			     div bh ; al := cx / 2
+    252	01D3  32 ED			     xor ch, ch
+    253	01D5  8A CC			     mov cl, ah
+    254	01D7  41			     inc cx
+    255	01D8  41			     inc cx ; cx := cx % 2 + 2
+    256	01D9  32 E4			     xor ah, ah	; ax :=	cx / 2
+    257	01DB  48			     dec ax
+    258	01DC  03 F8			     add di, ax
+    259	01DE  03 F8			     add di, ax
+    260
+    261	01E0			     frame_loop:
+    262
+    263	01E0  57			     push di
+    264	01E1  53			     push bx
+    265	01E2  51			     push cx
+    266	01E3  E8 FFA3			     call print_frame
+    267	01E6  83 EE 12			     sub si, 18
     268
-    269	01FE  59			     pop cx
-    270	01FF  5B			     pop bx
-    271	0200  5F			     pop di
-    272	0201  4F			     dec di
-    273	0202  4F			     dec di
-    274	0203  41			     inc cx
-    275	0204  41			     inc cx
-    276
-    277	0205  8B EC			     mov bp, sp
-    278	0207  3B 4E 00			     cmp word ptr cx, [bp]
-    279	020A  76 E0		     jbe     frame_loop
-    280	020C  44			     inc sp
-    281	020D  44			     inc sp
-    282	020E  C3			     ret
-    283	020F			     frame_open	endp
-    284
-    285
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 6
+    269	01E9  33 C9			     xor cx, cx	; вызов задержки
+    270	01EB  BA 2B67			     mov dx, 11111
+    271	01EE  B4 86			     mov ah, 86h
+    272	01F0  CD 15			     int 15h
+    273
+    274	01F2  59			     pop cx
+    275	01F3  5B			     pop bx
+    276	01F4  5F			     pop di
+    277	01F5  4F			     dec di
+    278	01F6  4F			     dec di
+    279	01F7  41			     inc cx
+    280	01F8  41			     inc cx
+    281
+    282	01F9  8B EC			     mov bp, sp
+    283	01FB  3B 4E 00			     cmp word ptr cx, [bp]
+    284	01FE  76 E0		     jbe     frame_loop
+    285	0200  44			     inc sp
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 6
 frame.asm
 
 
 
-    286
-    287	020F  48 65 6C 70 20 70	6F+  uganda db 'Help poor children in Uganda!',	'$'
-    288	      6F 72 20 63 68 69	6C+
-    289	      64 72 65 6E 20 69	6E+
-    290	      20 55 67 61 6E 64	61+
-    291	      21 24
-    292	022D  1E		     uganda_size db $ -	uganda
-    293
-    294	022E  4AC9 4ACD	4ABB 4ABA +  test_str dw 4ac9h,	4acdh, 4abbh, 4abah, 0ffffh, 4abah, 4ac8h, 4acdh, 4abch
-    295	      FFFF 4ABA	4AC8 4ACD +
-    296	      4ABC
-    297
-    298				     end start
-Turbo Assembler	 Version 4.1	    02/19/21 00:07:31	    Page 7
+    286	0201  44			     inc sp
+    287	0202  C3			     ret
+    288	0203			     frame_open	endp
+    289
+    290
+    291
+    292	0203  48 65 6C 70 20 70	6F+  uganda db 'Help poor children in Uganda!',	'$'
+    293	      6F 72 20 63 68 69	6C+
+    294	      64 72 65 6E 20 69	6E+
+    295	      20 55 67 61 6E 64	61+
+    296	      21 24
+    297	0221  1E		     uganda_size db $ -	uganda
+    298
+    299	0222  4AC9 4ACD	4ABB 4ABA +  test_str dw 4ac9h,	4acdh, 4abbh, 4abah, 0ffffh, 4abah, 4ac8h, 4acdh, 4abch
+    300	      FFFF 4ABA	4AC8 4ACD +
+    301	      4ABC
+    302
+    303				     end start
+Turbo Assembler	 Version 4.1	    02/19/21 15:10:20	    Page 7
 Symbol Table
 
 
@@ -336,7 +341,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/19/21"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "00:07:30"
+??TIME				  Text	 "15:10:20"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP
@@ -351,33 +356,31 @@ Symbol Name			  Type	 Value
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
 BACKGROUND			  Near	 DGROUP:0129
-DELAY				  Near	 DGROUP:013B
-DELAY_LOOP			  Near	 DGROUP:013E
 ES_VIDEOSEC			  Near	 DGROUP:0123
-FRAME_LOOP			  Near	 DGROUP:01EC
-FRAME_OPEN			  Near	 DGROUP:01D8
-LINE_WITH_BOARDS		  Near	 DGROUP:0158
+FRAME_LOOP			  Near	 DGROUP:01E0
+FRAME_OPEN			  Near	 DGROUP:01CC
+LINE_WITH_BOARDS		  Near	 DGROUP:014C
 LOOP_BACK			  Near	 DGROUP:0133
-LOWER_SHADOW			  Near	 DGROUP:017C
-MIDDLE				  Near	 DGROUP:01A6
-ONE_SYMBOL			  Near	 DGROUP:014F
-PRINT_FRAME			  Near	 DGROUP:0195
+LOWER_SHADOW			  Near	 DGROUP:0170
+MIDDLE				  Near	 DGROUP:019A
+ONE_SYMBOL			  Near	 DGROUP:0143
+PRINT_FRAME			  Near	 DGROUP:0189
 PRINT_N				  Near	 DGROUP:0107
-PRINT_N_CHARS			  Near	 DGROUP:0155
-PRINT_SHADOW			  Near	 DGROUP:0177
-PRINT_STR_IN_FRAME		  Near	 DGROUP:0192
-REV_DX				  Near	 DGROUP:0147
-SIDE_SHADOW			  Near	 DGROUP:0186
+PRINT_N_CHARS			  Near	 DGROUP:0149
+PRINT_SHADOW			  Near	 DGROUP:016B
+PRINT_STR_IN_FRAME		  Near	 DGROUP:0186
+REV_DX				  Near	 DGROUP:013B
+SIDE_SHADOW			  Near	 DGROUP:017A
 START				  Near	 DGROUP:0100
-TEST_STR			  Word	 DGROUP:022E
+TEST_STR			  Word	 DGROUP:0222
 TWO_STRINGS_SIZE		  Number 0140
-UGANDA				  Byte	 DGROUP:020F
-UGANDA_SIZE			  Byte	 DGROUP:022D
+UGANDA				  Byte	 DGROUP:0203
+UGANDA_SIZE			  Byte	 DGROUP:0221
 VIDEOSEC			  Number B800
 
 Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  0240 Word	  Public  CODE
+  _TEXT				  16  0234 Word	  Public  CODE
 
